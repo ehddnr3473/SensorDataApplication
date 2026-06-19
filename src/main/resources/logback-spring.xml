@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+	
+	<!-- 스프링 부트 프로퍼티 파일 설정 방법 -->
+	<springProperty name="logFilePath" source="log.filePath" />
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+   			<pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	
+	<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 파일경로 설정 -->
+		<file>${logFilePath}/logback.log</file>
+	
+		<!-- Rolling 정책 -->	
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- 일자별 로그파일 최대 보관주기(일) -->
+			<maxHistory>30</maxHistory>
+			<!-- 파일 쓰기가 종료된 log 파일명의 패턴을 지정, (.gz,.zip 등을 넣으면 자동 일자별 로그파일 압축) -->
+			<fileNamePattern>${logFilePath}/logback.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+			<!-- 파일당 최고 용량 -->
+			<maxFileSize>50MB</maxFileSize>
+		</rollingPolicy>
+		
+		<!-- 출력패턴 설정-->
+		<encoder>
+  			<pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder> 
+	</appender>
+    
+	<appender name="Error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 에러 로그 필터링 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+			<level>error</level> 
+			<onMatch>ACCEPT</onMatch> 
+			<onMismatch>DENY</onMismatch> 
+		</filter>
+		<!-- 파일경로 설정 -->
+		<file>${logFilePath}/error.log</file>
+		<!-- Rolling 정책 -->	
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- 파일 쓰기가 종료된 log 파일명의 패턴을 지정, (.gz,.zip 등을 넣으면 자동 일자별 로그파일 압축) -->
+			<fileNamePattern>${logFilePath}/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+			<!-- 일자별 로그파일 최대 보관주기(일) -->
+			<maxHistory>30</maxHistory>
+			<!-- 파일당 최고 용량 -->
+			<maxFileSize>50MB</maxFileSize>
+		</rollingPolicy>
+		<!-- 출력패턴 설정-->
+		<encoder>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder> 	    
+	</appender>
+    
+    <springProfile name="local,dev">
+		<root level="INFO">
+	    	<appender-ref ref="ROLLING" />
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="Error" />
+	    </root>
+	</springProfile>
+	
+	<springProfile name="prod">
+		<root level="WARN">
+	    	<appender-ref ref="ROLLING" />
+			<appender-ref ref="Error" />
+	    </root>
+	</springProfile>
+<typeAliases></typeAliases>
+</configuration>

@@ -1,0 +1,49 @@
+plugins {
+	java
+	id("org.springframework.boot") version "3.5.15"
+	id("io.spring.dependency-management") version "1.1.7"
+}
+
+group = "com.example"
+version = "0.0.1-SNAPSHOT"
+
+tasks.bootJar {
+	archiveFileName.set("sensor.jar")
+}
+
+tasks.jar {
+	enabled = false
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+	implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+	
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+	
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testCompileOnly("org.projectlombok:lombok")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testAnnotationProcessor("org.projectlombok:lombok")
+}
+
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
