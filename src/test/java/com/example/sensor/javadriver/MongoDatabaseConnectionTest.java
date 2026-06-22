@@ -1,19 +1,20 @@
-package com.example.sensor;
+package com.example.sensor.javadriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -25,16 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 public class MongoDatabaseConnectionTest {
 	
 	@Autowired
 	private MongoClient mongoClient;
-
-	@BeforeEach
-	void setUp() {
-		MongoDatabase db = mongoClient.getDatabase("timeseries_db");
-		db.drop();
-	}
 	
 	@AfterEach
 	void tearDown() {
@@ -43,8 +39,8 @@ public class MongoDatabaseConnectionTest {
 	}
 	
 	@Test
-	public void connectionTest() {
-		// Given
+	void connectionTest() {
+		// given
 		MongoDatabase db = mongoClient.getDatabase("timeseries_db");
 		
 		TimeSeriesOptions timeSeriesOptions = new TimeSeriesOptions("measuredAt")
@@ -97,20 +93,18 @@ public class MongoDatabaseConnectionTest {
 				)
 		);
 		
-		// When
+		// when
 		Document query = new Document("sensorId", 1);
 		
-		FindIterable<Document> metaFieldResults = temperatures.find(query)
-				.projection(new Document("_id", 0));
+		List<Document> results = temperatures.find(query)
+				.projection(new Document("_id", 0))
+				.into(new ArrayList<>());
 		
-		int count = 0;
-		
-		for (Document document : metaFieldResults) {
-			count++;
+		for (Document document : results) {
 			log.info("Document: {}", document.toJson());
 		}
 		
-		// Then
-		assertThat(count).isEqualTo(4);
+		// then
+		assertThat(results).hasSize(4);
 	}
 }
