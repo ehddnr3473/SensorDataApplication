@@ -1,7 +1,5 @@
 package com.example.sensor.mongotemplate.entity;
 
-import org.springframework.data.annotation.Id;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TestPerson {
 	
-	@Id
 	private String id;
 	private String name;
 	private Integer age;

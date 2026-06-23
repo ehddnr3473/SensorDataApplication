@@ -12,7 +12,7 @@ import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mongodb.client.MongoClient;
@@ -25,7 +25,7 @@ import com.mongodb.client.model.TimeSeriesOptions;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest
+@DataMongoTest
 @ActiveProfiles("test")
 public class MongoDatabaseConnectionTest {
 	
